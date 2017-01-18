@@ -15,32 +15,32 @@ node {
     }
 
     stage('npm install ') {
-        dir('microservice-demo/demoapp') {
+        dir('demoapp') {
           sh "npm install"
         }
     }
 
     stage('clean') {
       parallel(demoapp: {
-        dir('microservice-demo/demoapp') {
+        dir('demoapp') {
           sh "./mvnw clean"
         }
       }, repository: {
-        dir('microservice-demo/repository') {
+        dir('repository') {
           sh "./mvnw clean"
         }
       })
     }
 
     stage('backend unit tests demoapp') {
-        dir('microservice-demo/demoapp') {
+        dir('demoapp') {
           sh "./mvnw test"
           junit 'target/surefire-reports/*.xml'
         }
     }
 
     stage('backend unit tests repository-microservice') {
-        dir('microservice-demo/repository') {
+        dir('repository') {
           sh "./mvnw test"
           junit 'target/surefire-reports/*.xml'
         }
@@ -48,7 +48,7 @@ node {
 
 
     stage('frontend unit tests') {
-        dir('microservice-demo/demoapp') {
+        dir('demoapp') {
           sh "gulp test"
           junit 'target/test-results/karma/*.xml'
         }
@@ -56,18 +56,18 @@ node {
 
     stage('packaging') {
       parallel(demoapp: {
-        dir('microservice-demo/demoapp') {
+        dir('demoapp') {
           sh "./mvnw package -Pprod -DskipTests"
         }
       }, repository: {
-        dir('microservice-demo/repository') {
+        dir('repository') {
           sh "./mvnw package -Pprod -DskipTests"
         }
       })
     }
 
     stage('Install to test') {
-        dir('microservice-demo/demoapp') {
+        dir('demoapp') {
           docker.withRegistry('https://docker-registry-default.cloudapps.ocp-teco.teco.prd.a.tecdomain.net', 'demoapp-test') {
             docker.withServer('tcp://127.0.0.1:4243') {
               def newDemoApp = docker.build "demoapp-test/demoapp:${env.BUILD_TAG}"
@@ -77,7 +77,7 @@ node {
             }
           }
         }
-        dir('microservice-demo/repository') {
+        dir('repository') {
           docker.withRegistry('https://docker-registry-default.cloudapps.ocp-teco.teco.prd.a.tecdomain.net', 'demoapp-test') {
             docker.withServer('tcp://127.0.0.1:4243') {
               def newRepositoryApp = docker.build "demoapp-test/repository:${env.BUILD_TAG}"
