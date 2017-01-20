@@ -1,6 +1,6 @@
 {
   "generator-jhipster": {
-    "jhipsterVersion": "3.11.0",
+    "jhipsterVersion": "3.12.2",
     "baseName": "repository",
     "packageName": "com.tieto.teco.openshiftdemos.microservicedemo.repository",
     "packageFolder": "com/tieto/teco/openshiftdemos/microservicedemo/repository",
