@@ -1,0 +1,21 @@
+version: '2'
+services:
+    demoapp-cassandra:
+        container_name: demoapp-cassandra
+        image: cassandra:2.2.7
+        # volumes:
+        #     - ~/volumes/jhipster/demoapp/cassandra/:/var/lib/cassandra/data
+        ports:
+            - 7000:7000
+            - 7001:7001
+            - 7199:7199
+            - 9042:9042
+            - 9160:9160
+    demoapp-cassandra-migration:
+        extends:
+            file: cassandra-migration.yml
+            service: demoapp-cassandra-migration
+        links:
+            - demoapp-cassandra
+        environment:
+            - CREATE_KEYSPACE_SCRIPT=create-keyspace.cql
