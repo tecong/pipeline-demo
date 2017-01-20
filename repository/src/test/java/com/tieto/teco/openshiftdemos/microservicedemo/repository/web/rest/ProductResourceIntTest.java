@@ -9,12 +9,11 @@ import com.tieto.teco.openshiftdemos.microservicedemo.repository.service.Product
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.hamcrest.Matchers.hasItem;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,6 +25,7 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -103,17 +103,37 @@ public class ProductResourceIntTest {
         // Create the Product
 
         restProductMockMvc.perform(post("/api/products")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(product)))
-                .andExpect(status().isCreated());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(product)))
+            .andExpect(status().isCreated());
 
         // Validate the Product in the database
-        List<Product> products = productRepository.findAll();
-        assertThat(products).hasSize(databaseSizeBeforeCreate + 1);
-        Product testProduct = products.get(products.size() - 1);
+        List<Product> productList = productRepository.findAll();
+        assertThat(productList).hasSize(databaseSizeBeforeCreate + 1);
+        Product testProduct = productList.get(productList.size() - 1);
         assertThat(testProduct.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testProduct.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testProduct.getPrice()).isEqualTo(DEFAULT_PRICE);
+    }
+
+    @Test
+    @Transactional
+    public void createProductWithExistingId() throws Exception {
+        int databaseSizeBeforeCreate = productRepository.findAll().size();
+
+        // Create the Product with an existing ID
+        Product existingProduct = new Product();
+        existingProduct.setId(1L);
+
+        // An entity with an existing ID cannot be created, so this API call must fail
+        restProductMockMvc.perform(post("/api/products")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(existingProduct)))
+            .andExpect(status().isBadRequest());
+
+        // Validate the Alice in the database
+        List<Product> productList = productRepository.findAll();
+        assertThat(productList).hasSize(databaseSizeBeforeCreate);
     }
 
     @Test
@@ -126,12 +146,12 @@ public class ProductResourceIntTest {
         // Create the Product, which fails.
 
         restProductMockMvc.perform(post("/api/products")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(product)))
-                .andExpect(status().isBadRequest());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(product)))
+            .andExpect(status().isBadRequest());
 
-        List<Product> products = productRepository.findAll();
-        assertThat(products).hasSize(databaseSizeBeforeTest);
+        List<Product> productList = productRepository.findAll();
+        assertThat(productList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -144,12 +164,12 @@ public class ProductResourceIntTest {
         // Create the Product, which fails.
 
         restProductMockMvc.perform(post("/api/products")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(product)))
-                .andExpect(status().isBadRequest());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(product)))
+            .andExpect(status().isBadRequest());
 
-        List<Product> products = productRepository.findAll();
-        assertThat(products).hasSize(databaseSizeBeforeTest);
+        List<Product> productList = productRepository.findAll();
+        assertThat(productList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -158,14 +178,14 @@ public class ProductResourceIntTest {
         // Initialize the database
         productRepository.saveAndFlush(product);
 
-        // Get all the products
+        // Get all the productList
         restProductMockMvc.perform(get("/api/products?sort=id,desc"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.[*].id").value(hasItem(product.getId().intValue())))
-                .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-                .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
-                .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.doubleValue())));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(product.getId().intValue())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.doubleValue())));
     }
 
     @Test
@@ -189,7 +209,7 @@ public class ProductResourceIntTest {
     public void getNonExistingProduct() throws Exception {
         // Get the product
         restProductMockMvc.perform(get("/api/products/{id}", Long.MAX_VALUE))
-                .andExpect(status().isNotFound());
+            .andExpect(status().isNotFound());
     }
 
     @Test
@@ -208,17 +228,35 @@ public class ProductResourceIntTest {
                 .price(UPDATED_PRICE);
 
         restProductMockMvc.perform(put("/api/products")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(updatedProduct)))
-                .andExpect(status().isOk());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(updatedProduct)))
+            .andExpect(status().isOk());
 
         // Validate the Product in the database
-        List<Product> products = productRepository.findAll();
-        assertThat(products).hasSize(databaseSizeBeforeUpdate);
-        Product testProduct = products.get(products.size() - 1);
+        List<Product> productList = productRepository.findAll();
+        assertThat(productList).hasSize(databaseSizeBeforeUpdate);
+        Product testProduct = productList.get(productList.size() - 1);
         assertThat(testProduct.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testProduct.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testProduct.getPrice()).isEqualTo(UPDATED_PRICE);
+    }
+
+    @Test
+    @Transactional
+    public void updateNonExistingProduct() throws Exception {
+        int databaseSizeBeforeUpdate = productRepository.findAll().size();
+
+        // Create the Product
+
+        // If the entity doesn't have an ID, it will be created instead of just being updated
+        restProductMockMvc.perform(put("/api/products")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(product)))
+            .andExpect(status().isCreated());
+
+        // Validate the Product in the database
+        List<Product> productList = productRepository.findAll();
+        assertThat(productList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
     @Test
@@ -231,11 +269,11 @@ public class ProductResourceIntTest {
 
         // Get the product
         restProductMockMvc.perform(delete("/api/products/{id}", product.getId())
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
 
         // Validate the database is empty
-        List<Product> products = productRepository.findAll();
-        assertThat(products).hasSize(databaseSizeBeforeDelete - 1);
+        List<Product> productList = productRepository.findAll();
+        assertThat(productList).hasSize(databaseSizeBeforeDelete - 1);
     }
 }

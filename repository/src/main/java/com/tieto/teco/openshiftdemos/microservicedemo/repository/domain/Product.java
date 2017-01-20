@@ -89,7 +89,7 @@ public class Product implements Serializable {
             return false;
         }
         Product product = (Product) o;
-        if(product.id == null || id == null) {
+        if (product.id == null || id == null) {
             return false;
         }
         return Objects.equals(id, product.id);

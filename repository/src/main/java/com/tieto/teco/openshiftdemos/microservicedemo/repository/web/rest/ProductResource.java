@@ -5,6 +5,8 @@ import com.tieto.teco.openshiftdemos.microservicedemo.repository.domain.Product;
 import com.tieto.teco.openshiftdemos.microservicedemo.repository.service.ProductService;
 import com.tieto.teco.openshiftdemos.microservicedemo.repository.web.rest.util.HeaderUtil;
 import com.tieto.teco.openshiftdemos.microservicedemo.repository.web.rest.util.PaginationUtil;
+
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -84,7 +86,7 @@ public class ProductResource {
      */
     @GetMapping("/products")
     @Timed
-    public ResponseEntity<List<Product>> getAllProducts(Pageable pageable)
+    public ResponseEntity<List<Product>> getAllProducts(@ApiParam Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of Products");
         Page<Product> page = productService.findAll(pageable);
