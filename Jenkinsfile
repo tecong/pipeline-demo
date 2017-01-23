@@ -51,6 +51,7 @@ node {
             projectKey('demoapp')
             sonarInstanceName('SonarQube')
           }
+        }
       }
     }
 
