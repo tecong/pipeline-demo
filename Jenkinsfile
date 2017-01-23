@@ -32,6 +32,18 @@ node {
       })
     }
 
+    stage('sonar') {
+      parallel(demoapp: {
+        dir('demoapp') {
+          sh "./mvnw clean sonar:sonar"
+        }
+      }, repository: {
+        dir('repository') {
+          sh "./mvnw clean sonar:sonar"
+        }
+      })
+    }
+
     stage('backend unit tests demoapp') {
         dir('demoapp') {
           sh "./mvnw test"
