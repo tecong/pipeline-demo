@@ -44,6 +44,16 @@ node {
       })
     }
 
+    stage('quality gate') {
+      configure { project ->
+        project / publishers / 'quality.gates.jenkins.plugin.QGPublisher' (plugin:'quality-gates@2.5') {
+          jobConfigData {
+            projectKey('demoapp')
+            sonarInstanceName('SonarQube')
+          }
+      }
+    }
+
     stage('backend unit tests demoapp') {
         dir('demoapp') {
           sh "./mvnw test"
