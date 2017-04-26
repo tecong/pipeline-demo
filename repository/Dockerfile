@@ -3,7 +3,7 @@ FROM openjdk:8-jre
 ENV JHIPSTER_SLEEP 0
 
 # add directly the war
-ADD *.war /app.war
+ADD target/*.war /app.war
 RUN sh -c 'mkdir -p /target/h2db/db && chmod -R a+rwX /target'
 
 RUN sh -c 'touch /app.war'
