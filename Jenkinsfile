@@ -80,7 +80,7 @@ node {
 
     stage('Install to test') {
         dir('demoapp') {
-          docker.withRegistry('https://docker-registry-default.cloudapps.ocp-teco.teco.prd.a.tecdomain.net', 'demoapp-test') {
+          docker.withRegistry('https://docker-registry-default.cloudapps.ocp-tdemo.teco.prd.a.tecdomain.net', 'demoapp-test') {
             docker.withServer('tcp://127.0.0.1:4243') {
               def newDemoApp = docker.build "demoapp-test/demoapp:${env.BUILD_TAG}"
               newDemoApp.push()
@@ -90,7 +90,7 @@ node {
           }
         }
         dir('repository') {
-          docker.withRegistry('https://docker-registry-default.cloudapps.ocp-teco.teco.prd.a.tecdomain.net', 'demoapp-test') {
+          docker.withRegistry('https://docker-registry-default.cloudapps.ocp-tdemo.teco.prd.a.tecdomain.net', 'demoapp-test') {
             docker.withServer('tcp://127.0.0.1:4243') {
               def newRepositoryApp = docker.build "demoapp-test/repository:${env.BUILD_TAG}"
               newRepositoryApp.push()
@@ -103,7 +103,7 @@ node {
 
   stage('Install to UAT') {
     input message: 'Do you want to install this build to UAT env?', ok: 'Install to UAT'
-    docker.withRegistry('https://docker-registry-default.cloudapps.ocp-teco.teco.prd.a.tecdomain.net', 'demoapp-test') {
+    docker.withRegistry('https://docker-registry-default.cloudapps.ocp-tdemo.teco.prd.a.tecdomain.net', 'demoapp-test') {
       docker.withServer('tcp://127.0.0.1:4243') {
         def testimage = docker.image("demoapp-test/demoapp:${env.BUILD_TAG}")
         testimage.push 'uat'
@@ -115,7 +115,7 @@ node {
 
   stage('Install to prod') {
     input message: 'Do you want to install this build to prod env?', ok: 'Install to prod'
-    docker.withRegistry('https://docker-registry-default.cloudapps.ocp-teco.teco.prd.a.tecdomain.net', 'demoapp-test') {
+    docker.withRegistry('https://docker-registry-default.cloudapps.ocp-tdemo.teco.prd.a.tecdomain.net', 'demoapp-test') {
       docker.withServer('tcp://127.0.0.1:4243') {
         def testimage = docker.image("demoapp-test/demoapp:${env.BUILD_TAG}")
         testimage.push 'prod'
