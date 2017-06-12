@@ -36,17 +36,19 @@ stage('clean') {
 }
 
 stage('sonar') {
-  node {
       parallel(demoapp: {
-        dir('demoapp') {
-          sh "./mvnw clean sonar:sonar"
+        node {
+          dir('demoapp') {
+            sh "./mvnw clean sonar:sonar"
+          }
         }
       }, repository: {
-        dir('repository') {
-          sh "./mvnw clean sonar:sonar"
+        node {
+          dir('repository') {
+            sh "./mvnw clean sonar:sonar"
+          }
         }
       })
-  }
 }
 
 stage('backend unit tests demoapp') {
@@ -78,17 +80,19 @@ stage('frontend unit tests') {
 }
 
 stage('packaging') {
-  node {
       parallel(demoapp: {
-        dir('demoapp') {
-          sh "./mvnw package -Pprod -DskipTests"
+        node {
+          dir('demoapp') {
+            sh "./mvnw package -Pprod -DskipTests"
+          }
         }
       }, repository: {
-        dir('repository') {
-          sh "./mvnw package -Pprod -DskipTests"
+        node {
+          dir('repository') {
+            sh "./mvnw package -Pprod -DskipTests"
+          }
         }
       })
-  }
 }
 
 stage('Install to test') {
