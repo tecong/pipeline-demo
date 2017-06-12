@@ -1,26 +1,28 @@
-node {
-    // uncomment these 2 lines and edit the name 'node-4.6.0' according to what you choose in configuration
-    // def nodeHome = tool name: 'node-4.6.0', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
-    // env.PATH = "${nodeHome}/bin:${env.PATH}"
-
-    stage('check tools') {
+stage('check tools') {
+  node {
         sh "node -v"
         sh "npm -v"
         sh "bower -v"
         sh "gulp -v"
-    }
+  }
+}
 
-    stage('checkout') {
+stage('checkout') {
+  node {
         checkout scm
-    }
+  }
+}
 
-    stage('npm install ') {
+stage('npm install ') {
+  node {
         dir('demoapp') {
           sh "npm install"
         }
-    }
+  }
+}
 
-    stage('clean') {
+stage('clean') {
+  node {
       parallel(demoapp: {
         dir('demoapp') {
           sh "./mvnw clean"
@@ -30,9 +32,11 @@ node {
           sh "./mvnw clean"
         }
       })
-    }
+  }
+}
 
-    stage('sonar') {
+stage('sonar') {
+  node {
       parallel(demoapp: {
         dir('demoapp') {
           sh "./mvnw clean sonar:sonar"
@@ -42,31 +46,39 @@ node {
           sh "./mvnw clean sonar:sonar"
         }
       })
-    }
+  }
+}
 
-    stage('backend unit tests demoapp') {
+stage('backend unit tests demoapp') {
+  node {
         dir('demoapp') {
           sh "./mvnw test"
           junit 'target/surefire-reports/*.xml'
         }
-    }
+  }
+}
 
-    stage('backend unit tests repository-microservice') {
+stage('backend unit tests repository-microservice') {
+  node {
         dir('repository') {
           sh "./mvnw test"
           junit 'target/surefire-reports/*.xml'
         }
-    }
+  }
+}
 
 
-    stage('frontend unit tests') {
+stage('frontend unit tests') {
+  node {
         dir('demoapp') {
           sh "gulp test"
           junit 'target/test-results/karma/*.xml'
         }
-    }
+  }
+}
 
-    stage('packaging') {
+stage('packaging') {
+  node {
       parallel(demoapp: {
         dir('demoapp') {
           sh "./mvnw package -Pprod -DskipTests"
@@ -76,9 +88,11 @@ node {
           sh "./mvnw package -Pprod -DskipTests"
         }
       })
-    }
+  }
+}
 
-    stage('Install to test') {
+stage('Install to test') {
+  node {
         dir('demoapp') {
           docker.withRegistry('https://docker-registry-default.cloudapps.ocp-tdemo.teco.prd.a.tecdomain.net', 'demoapp-test') {
             docker.withServer('tcp://127.0.0.1:4243') {
@@ -99,10 +113,12 @@ node {
             }
           }
         }
-   }
+  }
+}
 
-  stage('Install to UAT') {
-    input message: 'Do you want to install this build to UAT env?', ok: 'Install to UAT'
+stage('Install to UAT') {
+  input message: 'Do you want to install this build to UAT env?', ok: 'Install to UAT'
+  node {
     docker.withRegistry('https://docker-registry-default.cloudapps.ocp-tdemo.teco.prd.a.tecdomain.net', 'demoapp-test') {
       docker.withServer('tcp://127.0.0.1:4243') {
         def testimage = docker.image("demoapp-test/demoapp:${env.BUILD_TAG}")
@@ -112,9 +128,11 @@ node {
       }
     }
   }
+}
 
-  stage('Install to prod') {
-    input message: 'Do you want to install this build to prod env?', ok: 'Install to prod'
+stage('Install to prod') {
+  input message: 'Do you want to install this build to prod env?', ok: 'Install to prod'
+  node {
     docker.withRegistry('https://docker-registry-default.cloudapps.ocp-tdemo.teco.prd.a.tecdomain.net', 'demoapp-test') {
       docker.withServer('tcp://127.0.0.1:4243') {
         def testimage = docker.image("demoapp-test/demoapp:${env.BUILD_TAG}")

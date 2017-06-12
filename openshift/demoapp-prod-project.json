@@ -1,0 +1,445 @@
+{
+    "kind": "List",
+    "apiVersion": "v1",
+    "metadata": {},
+    "items": [
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "demoapp",
+                "generation": 30,
+                "creationTimestamp": null,
+                "labels": {
+                    "application": "demoapp",
+                    "createdBy": ""
+                }
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Rolling",
+                    "rollingParams": {
+                        "updatePeriodSeconds": 1,
+                        "intervalSeconds": 1,
+                        "timeoutSeconds": 600,
+                        "maxUnavailable": "25%",
+                        "maxSurge": "25%"
+                    },
+                    "resources": {}
+                },
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    },
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "demoapp"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "namespace": "demoapp-test",
+                                "name": "demoapp:prod"
+                            }
+                        }
+                    }
+                ],
+                "replicas": 1,
+                "test": false,
+                "selector": {
+                    "deploymentconfig": "demoapp"
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "deploymentconfig": "demoapp"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "demoapp",
+                                "image": "demoapp",
+                                "ports": [
+                                    {
+                                        "containerPort": 8080,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "SPRING_CLOUD_CONFIG_URI",
+                                        "value": "http://admin:admin@eureka:8761/config"
+                                    },
+                                    {
+                                        "name": "SPRING_PROFILES_ACTIVE",
+                                        "value": "dev,swagger"
+                                    },
+                                    {
+                                        "name": "EUREKA_CLIENT_SERVICEURL_DEFAULTZONE",
+                                        "value": "http://admin:admin@eureka:8761/eureka"
+                                    }
+                                ],
+                                "readinessProbe": {
+                                    "httpGet": {
+                                        "path": "/",
+                                        "port": 8080,
+                                        "scheme": "HTTP"
+                                    },
+                                    "initialDelaySeconds": 30,
+                                    "timeoutSeconds": 1,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "terminationMessagePath": "/dev/termination-log",
+                                "imagePullPolicy": "IfNotPresent",
+                                "securityContext": {
+                                    "capabilities": {},
+                                    "privileged": false
+                                }
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 30,
+                        "dnsPolicy": "ClusterFirst",
+                        "securityContext": {}
+                    }
+                }
+            },
+            "status": {
+                "observedGeneration": 30,
+                "replicas": 1,
+                "updatedReplicas": 1,
+                "availableReplicas": 1
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "eureka",
+                "generation": 4,
+                "creationTimestamp": null,
+                "labels": {
+                    "application": "demoapp",
+                    "createdBy": ""
+                },
+                "annotations": {
+                    "description": "Defines how to deploy the jhipster registry"
+                }
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Rolling",
+                    "rollingParams": {
+                        "updatePeriodSeconds": 1,
+                        "intervalSeconds": 1,
+                        "timeoutSeconds": 600,
+                        "maxUnavailable": "25%",
+                        "maxSurge": "25%"
+                    },
+                    "resources": {}
+                },
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    }
+                ],
+                "replicas": 1,
+                "test": false,
+                "selector": {
+                    "name": "eureka"
+                },
+                "template": {
+                    "metadata": {
+                        "name": "eureka",
+                        "creationTimestamp": null,
+                        "labels": {
+                            "name": "eureka"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "eureka",
+                                "image": "jhipster/jhipster-registry",
+                                "ports": [
+                                    {
+                                        "containerPort": 8761,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "SECURITY_USER_PASSWORD",
+                                        "value": "admin"
+                                    },
+                                    {
+                                        "name": "SPRING_PROFILES_ACTIVE",
+                                        "value": "prod"
+                                    },
+                                    {
+                                        "name": "GIT_URI",
+                                        "value": "https://github.com/tecong/openshift-demos/"
+                                    },
+                                    {
+                                        "name": "GIT_SEARCH_PATHS",
+                                        "value": "microservice-demo/central-config"
+                                    }
+                                ],
+                                "resources": {},
+                                "terminationMessagePath": "/dev/termination-log",
+                                "imagePullPolicy": "Always"
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 30,
+                        "dnsPolicy": "ClusterFirst",
+                        "securityContext": {}
+                    }
+                }
+            },
+            "status": {
+                "observedGeneration": 4,
+                "replicas": 1,
+                "updatedReplicas": 1,
+                "availableReplicas": 1
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "repository",
+                "generation": 16,
+                "creationTimestamp": null,
+                "labels": {
+                    "application": "demoapp",
+                    "createdBy": ""
+                }
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Rolling",
+                    "rollingParams": {
+                        "updatePeriodSeconds": 1,
+                        "intervalSeconds": 1,
+                        "timeoutSeconds": 600,
+                        "maxUnavailable": "25%",
+                        "maxSurge": "25%"
+                    },
+                    "resources": {}
+                },
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    },
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "repository"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "namespace": "demoapp-test",
+                                "name": "repository:prod"
+                            }
+                        }
+                    }
+                ],
+                "replicas": 1,
+                "test": false,
+                "selector": {
+                    "deploymentconfig": "repository"
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "deploymentconfig": "repository"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "repository",
+                                "image": "repository",
+                                "ports": [
+                                    {
+                                        "containerPort": 8081,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "SPRING_CLOUD_CONFIG_URI",
+                                        "value": "http://admin:admin@eureka:8761/config"
+                                    },
+                                    {
+                                        "name": "SPRING_PROFILES_ACTIVE",
+                                        "value": "dev,swagger"
+                                    },
+                                    {
+                                        "name": "EUREKA_CLIENT_SERVICEURL_DEFAULTZONE",
+                                        "value": "http://admin:admin@eureka:8761/eureka"
+                                    }
+                                ],
+                                "terminationMessagePath": "/dev/termination-log",
+                                "imagePullPolicy": "IfNotPresent",
+                                "securityContext": {
+                                    "capabilities": {},
+                                    "privileged": false
+                                }
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 30,
+                        "dnsPolicy": "ClusterFirst",
+                        "securityContext": {}
+                    }
+                }
+            },
+            "status": {
+                "observedGeneration": 16,
+                "replicas": 1,
+                "updatedReplicas": 1,
+                "availableReplicas": 1
+            }
+        },
+        {
+            "kind": "Route",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "demoapp",
+                "creationTimestamp": null,
+                "labels": {
+                    "application": "demoapp",
+                    "createdBy": ""
+                }
+            },
+            "spec": {
+                "host": "demoapp-prod.cloudapps.ocp-tdemo.teco.prd.a.tecdomain.net",
+                "to": {
+                    "kind": "Service",
+                    "name": "demoapp",
+                    "weight": 100
+                }
+            },
+            "status": {
+                "ingress": [
+                    {
+                        "host": "demoapp-prod.cloudapps.ocp-tdemo.teco.prd.a.tecdomain.net",
+                        "routerName": "router",
+                        "conditions": [
+                            {
+                                "type": "Admitted",
+                                "status": "True",
+                                "lastTransitionTime": "2017-05-08T10:54:01Z"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "demoapp",
+                "creationTimestamp": null,
+                "labels": {
+                    "application": "demoapp",
+                    "createdBy": ""
+                }
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "demoapp",
+                        "protocol": "TCP",
+                        "port": 8080,
+                        "targetPort": 8080
+                    }
+                ],
+                "selector": {
+                    "deploymentconfig": "demoapp"
+                },
+                "type": "ClusterIP",
+                "sessionAffinity": "None"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "eureka",
+                "creationTimestamp": null,
+                "labels": {
+                    "app": "demoapp",
+                    "application": "demoapp",
+                    "createdBy": ""
+                },
+                "annotations": {
+                    "description": "Jhipster registry for microservice registration"
+                }
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "eureka",
+                        "protocol": "TCP",
+                        "port": 8761,
+                        "targetPort": 8761
+                    }
+                ],
+                "selector": {
+                    "name": "eureka"
+                },
+                "type": "ClusterIP",
+                "sessionAffinity": "None"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "repository",
+                "creationTimestamp": null,
+                "labels": {
+                    "application": "demoapp",
+                    "createdBy": ""
+                }
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "repository",
+                        "protocol": "TCP",
+                        "port": 8081,
+                        "targetPort": 8081
+                    }
+                ],
+                "selector": {
+                    "deploymentconfig": "repository"
+                },
+                "type": "ClusterIP",
+                "sessionAffinity": "None"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        }
+    ]
+}
