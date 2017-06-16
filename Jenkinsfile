@@ -122,8 +122,8 @@ stage('End-to-end tests') {
     dir('robot-tests') {
       sh 'mkdir -p tests/results'
       docker.withServer('tcp://127.0.0.1:4243') {
-        docker.image('robot:latest').inside('--privileged=true -v $WORKSPACE/robot-tests/tests:/robot') {
-          sh 'export ROBOT_TESTS=/robot/e2etests.robot;export PARAMETERS="-V /robot/test-env.py"; run-robot.sh'
+        docker.image('robot:latest').inside('--privileged=true -v $WORKSPACE/robot-tests/tests:/robot --security-opt seccomp=chrome.json') {
+          sh 'export ROBOT_TESTS=/robot/e2etests.robot; export PARAMETERS=" -V /robot/test-env.py" ; run-robot.sh'
         }
         sh 'docker logs $(docker ps -a | grep robot | head -1 | cut -d \' \' -f 1)'
       }
