@@ -121,8 +121,9 @@ stage('End-to-end tests') {
     checkout scm
     dir('robot-tests') {
       sh 'mkdir -p tests/results'
+      env.ROBOT_OUTPUT_DIRECTORY="$WORKSPACE/robot-tests/tests/results"
       env.ROBOT_TESTS="$WORKSPACE/robot-tests/tests"
-      env.PARAMETERS="$WORKSPACE/robot-tests/tests/test-env.py"
+      env.PARAMETERS="-V $WORKSPACE/robot-tests/tests/test-env.py"
       sh './run.sh'
     }
   }

@@ -24,9 +24,9 @@ if [[ "${ROBOT_TESTS}" == "false" ]]; then
 fi
 
 # Start Xvfb
-echo -e "Starting Xvfb on display ${DISPLAY} with res ${RES}"
-Xvfb ${DISPLAY} -ac -screen 0 ${RES} +extension RANDR &
-export DISPLAY=${DISPLAY}
+#echo -e "Starting Xvfb on display ${DISPLAY} with res ${RES}"
+#Xvfb ${DISPLAY} -ac -screen 0 ${RES} +extension RANDR &
+#export DISPLAY=${DISPLAY}
 
 # Creating output directory
 if [ ! -d "${ROBOT_OUTPUT_DIRECTORY}" ]; then
@@ -38,8 +38,8 @@ fi
 # Execute tests
 echo -e "Executing robot test command: pybot --loglevel ${LOG_LEVEL} ${PARAMETERS} -d ${ROBOT_OUTPUT_DIRECTORY} ${ROBOT_TESTS}"
 
-ls -la /robot
-pybot --loglevel ${LOG_LEVEL} ${PARAMETERS} -d ${ROBOT_OUTPUT_DIRECTORY} ${ROBOT_TESTS}
+#ls -la /robot
+xvfb-run pybot --loglevel ${LOG_LEVEL} ${PARAMETERS} -d ${ROBOT_OUTPUT_DIRECTORY} ${ROBOT_TESTS}
 
 # Stop Xvfb
-kill -9 $(pgrep Xvfb)
+#kill -9 $(pgrep Xvfb)
