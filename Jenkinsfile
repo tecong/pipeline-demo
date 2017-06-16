@@ -126,6 +126,15 @@ stage('End-to-end tests') {
       env.PARAMETERS="-V $WORKSPACE/robot-tests/tests/test-env.py"
       sh './run.sh'
     }
+    step([$class: 'hudson.plugins.robot.RobotPublisher',
+	outputPath: 'robot-tests/tests/results',
+	otherFiles: '',
+	passThreshold: 100,
+	unstableThreshold: 0,
+	outputFileName: 'output.xml',
+	reportFileName: 'report.html',
+	logFileName: 'log.html' ] )
+    step([$class: 'ArtifactArchiver', artifacts: '**/robot-tests/tests/results/*', fingerprint: true])
   }
 }
 
