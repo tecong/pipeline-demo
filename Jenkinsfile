@@ -118,6 +118,7 @@ stage('Install to test') {
 
 stage('End-to-end tests') {
   node ('test') {
+    checkout scm
     dir('robot-tests') {
       sh 'mkdir -p tests/results'
       docker.withServer('tcp://127.0.0.1:4243') {
