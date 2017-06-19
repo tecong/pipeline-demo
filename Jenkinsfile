@@ -120,22 +120,41 @@ stage('End-to-end tests') {
   node ('test') {
     sleep 30
     checkout scm
-    dir('robot-tests') {
-      sh 'mkdir -p tests/results'
-      env.ROBOT_OUTPUT_DIRECTORY="$WORKSPACE/robot-tests/tests/results"
-      env.ROBOT_TESTS="$WORKSPACE/robot-tests/tests"
-      env.PARAMETERS="-V $WORKSPACE/robot-tests/tests/test-env.py"
-      sh './run.sh'
-    }
-    step([$class: 'hudson.plugins.robot.RobotPublisher',
-	outputPath: 'robot-tests/tests/results',
-	otherFiles: '',
-	passThreshold: 100,
-	unstableThreshold: 0,
-	outputFileName: 'output.xml',
-	reportFileName: 'report.html',
-	logFileName: 'log.html' ] )
-    step([$class: 'ArtifactArchiver', artifacts: '**/robot-tests/tests/results/*', fingerprint: true])
+    parallel(firefox: {
+      dir('robot-tests') {
+        sh 'mkdir -p tests/results-firefox'
+        env.ROBOT_OUTPUT_DIRECTORY="$WORKSPACE/robot-tests/tests/results-firefox"
+        env.ROBOT_TESTS="$WORKSPACE/robot-tests/tests"
+        env.PARAMETERS="-V $WORKSPACE/robot-tests/tests/test-env-firefox.py"
+        sh './run.sh'
+      }
+      step([$class: 'hudson.plugins.robot.RobotPublisher',
+	      outputPath: 'robot-tests/tests/results-firefox',
+	      otherFiles: '',
+	      passThreshold: 100,
+	      unstableThreshold: 0,
+	      outputFileName: 'output.xml',
+	      reportFileName: 'report.html',
+	      logFileName: 'log.html' ] )
+      step([$class: 'ArtifactArchiver', artifacts: '**/robot-tests/tests/results-firefox/*', fingerprint: true])
+    }, chrome: {
+      dir('robot-tests') {
+        sh 'mkdir -p tests/results-chrome'
+        env.ROBOT_OUTPUT_DIRECTORY="$WORKSPACE/robot-tests/tests/results-chrome"
+        env.ROBOT_TESTS="$WORKSPACE/robot-tests/tests"
+        env.PARAMETERS="-V $WORKSPACE/robot-tests/tests/test-env-chrome.py"
+        sh './run.sh'
+      }
+      step([$class: 'hudson.plugins.robot.RobotPublisher',
+	      outputPath: 'robot-tests/tests/results-chrome',
+	      otherFiles: '',
+	      passThreshold: 100,
+	      unstableThreshold: 0,
+	      outputFileName: 'output.xml',
+	      reportFileName: 'report.html',
+	      logFileName: 'log.html' ] )
+      step([$class: 'ArtifactArchiver', artifacts: '**/robot-tests/tests/results-chrome/*', fingerprint: true])
+    })
   }
 }
 
