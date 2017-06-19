@@ -22,13 +22,6 @@ Start Browser
     Reload Page
     Sleep	2s
 
-#Open Page
-#    [Documentation]    Opens browser to login page
-#    Open Browser    ${URL}    ${BROWSER}
-#    Set Window Size    1024    768
-#	Reload Page
-#	Sleep    2s
-
 
 *** Test Cases ***
 BrowseLinks
@@ -39,17 +32,18 @@ BrowseLinks
     Start Browser
 	Capture Page Screenshot
 
-	Click Link   Register a new account
+	Click Link   Register
+  Capture Page Screenshot
 # have to reload here because otherwise random failures becasue of stale element
 	Reload Page
 	Click Link 	 sign in
 	Capture Page Screenshot
 	
 
-#    Input Text    xpath=//input[@id='password']   ${USERNAME_A}
-#    Input Text    xpath=//input[@id='password']    ${PWD_A}
-#    Click Element    //*[@type='submit']
-#	 Wait Until Element Is Visible    //div[.='You are logged in as user "admin".']
+    Input Text    id=username   ${USERNAME_A}
+    Input Text    id=password    ${PWD_A}
+    Click Element    xpath=//button[@type='submit']
+	 Wait Until Element Is Visible    //div[.='You are logged in as user "admin".']
 
 
 *** Test Cases ***
