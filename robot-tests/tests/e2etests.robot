@@ -5,7 +5,6 @@ Suite Setup       Start Browser
 Suite Teardown    Close Browser
 
 *** Variables ***
-${BROWSER}        GoogleChrome
 ${USERNAME_U}       user
 ${PWD_U}		    user
 
