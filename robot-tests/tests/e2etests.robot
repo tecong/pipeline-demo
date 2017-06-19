@@ -5,7 +5,7 @@ Suite Setup       Start Browser
 Suite Teardown    Close Browser
 
 *** Variables ***
-${BROWSER}        GoogleChrome
+${BROWSER}        Firefox
 ${USERNAME_U}       user
 ${PWD_U}		    user
 
@@ -21,7 +21,7 @@ Start Browser
     Open Browser       ${URL}  ${BROWSER}  Node  http://127.0.0.1:4444/wd/hub
     Set Window Size   1024  768
     Reload Page
-    Sleep 2s
+    Sleep	2s
 
 #Open Page
 #    [Documentation]    Opens browser to login page
@@ -38,11 +38,14 @@ BrowseLinks
 
     Log 	Browsing to url ${URL}
     Start Browser
+	Capture Page Screenshot
 
 	Click Link   Register a new account
 # have to reload here because otherwise random failures becasue of stale element
 	Reload Page
 	Click Link 	 sign in
+	Capture Page Screenshot
+	
 
 #    Input Text    xpath=//input[@id='password']   ${USERNAME_A}
 #    Input Text    xpath=//input[@id='password']    ${PWD_A}
@@ -57,6 +60,7 @@ SignInPage
 
     Start Browser
 	Click Link	sign in
+	Capture Page Screenshot
 
 #    Input Text    xpath=//input[@id='password']   ${USERNAME_A}
 #    Input Text    xpath=//input[@id='password']    ${PWD_A}
@@ -72,3 +76,4 @@ RegistrationPage
 	Click Link   Register a new account
 
 #	 Wait Until Element Is Visible    //h1[.='Registration']
+	Capture Page Screenshot
