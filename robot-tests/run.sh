@@ -39,7 +39,8 @@ fi
 echo -e "Executing robot test command: pybot --loglevel ${LOG_LEVEL} ${PARAMETERS} -d ${ROBOT_OUTPUT_DIRECTORY} ${ROBOT_TESTS}"
 
 #ls -la /robot
-xvfb-run pybot --loglevel ${LOG_LEVEL} ${PARAMETERS} -d ${ROBOT_OUTPUT_DIRECTORY} ${ROBOT_TESTS}
+#xvfb-run pybot --loglevel ${LOG_LEVEL} ${PARAMETERS} -d ${ROBOT_OUTPUT_DIRECTORY} ${ROBOT_TESTS}
+pybot --loglevel ${LOG_LEVEL} ${PARAMETERS} -d ${ROBOT_OUTPUT_DIRECTORY} ${ROBOT_TESTS}
 
 # Stop Xvfb
 #kill -9 $(pgrep Xvfb)
