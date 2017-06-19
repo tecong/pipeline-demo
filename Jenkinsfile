@@ -118,6 +118,7 @@ stage('Install to test') {
 
 stage('End-to-end tests') {
   node ('test') {
+    sleep 30
     checkout scm
     dir('robot-tests') {
       sh 'mkdir -p tests/results'
