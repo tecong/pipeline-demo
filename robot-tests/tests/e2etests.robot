@@ -18,7 +18,7 @@ Test Config
 
 Start Browser
     [Documentation]   Start browser on Selenium Grid
-    Open Broser       ${URL}  ${BROWSER}  Node  http://127.0.0.1:4444/wd/hub
+    Open Browser       ${URL}  ${BROWSER}  Node  http://127.0.0.1:4444/wd/hub
     Set Window Size   1024  768
     Reload Page
     Sleep 2s
