@@ -32,7 +32,7 @@ BrowseLinks
     Start Browser
     Capture Page Screenshot     browselinks-{index}.png
 
-    Click Link   Register
+    Click Link   Register a new account
     Capture Page Screenshot     browselinks-{index}.png
 # have to reload here because otherwise random failures becasue of stale element
     Reload Page
@@ -90,4 +90,3 @@ LoginWithNewAccount
     Wait Until Element Is Visible    //div[.='You are logged in as user "robotuser".']
     Capture Page Screenshot     login_with_new_account-{index}.png
     Click Link  id=logout
-    
