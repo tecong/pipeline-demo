@@ -1,8 +1,8 @@
 *** Settings ***
 Library           robot.libraries.Collections._List
-Library           Selenium2Library
+Library           ExtendedSelenium2Library
 Suite Setup       Start Browser
-Suite Teardown    Close Browser
+Suite Teardown    Close All Browsers
 
 *** Variables ***
 ${USERNAME_U}       user
@@ -30,14 +30,15 @@ BrowseLinks
 
     Log 	Browsing to url ${URL}
     Start Browser
-    Capture Page Screenshot     browselinks-{index}.png
+    Capture Page Screenshot     browselinks-1.png
 
     Click Link   Register a new account
-    Capture Page Screenshot     browselinks-{index}.png
+    Capture Page Screenshot     browselinks-2.png
 # have to reload here because otherwise random failures becasue of stale element
     Reload Page
     Click Link 	 sign in
-    Capture Page Screenshot     browselinks-{index}.png
+    Capture Page Screenshot     browselinks-3.png
+    Close Browser
 
 
 *** Test Cases ***
@@ -46,16 +47,19 @@ AdminSignIn
     [Setup]    Test Config
 
     Start Browser
-    Click Link      xpath=//*[@ng-click='vm.login()']
-    Capture Page Screenshot     admin_sign_in-{index}.png
+    click element  account-menu
+    Click Element      login
+    Capture Page Screenshot     admin_sign_in-1.png
 
     Input Text    id=username   ${USERNAME_A}
     Input Text    id=password    ${PWD_A}
     Click Element    xpath=//button[@type='submit']
     Wait Until Element Is Visible    //div[.='You are logged in as user "admin".']
-    Capture Page Screenshot     admin_sign_in-{index}.png
-    Click Element  id=logout
-    Capture Page Screenshot     admin_sign_in-{index}.png
+    Capture Page Screenshot     admin_sign_in-2.png
+    click element  account-menu
+    Click Element  logout
+    Capture Page Screenshot     admin_sign_in-3.png
+    Close Browser
 
 *** Test Cases ***
 RegisterNewAccount
@@ -63,30 +67,38 @@ RegisterNewAccount
     [Setup]    Test Config
 
     Start Browser
-    Click Link      xpath=//*[@id='redister_account']
+    click element   account-menu
+    Click Element   register_account
 
-	Wait Until Element Is Visible    //h1[.='Registration']
-    Capture Page Screenshot     register_new_account-{index}.png
-    Input Text  id=login    ${USERNAME_TEST}
-    Input Text  id=email    ${EMAIL}
-    Input Text  id=password ${PWD_TEST}
-    Input Text  id=confirmPassword  "robotpassu"
-    Capture Page Screenshot     register_new_account-{index}.png
+#	Wait Until Element Is Visible    //h1[.='Registration']
+    Capture Page Screenshot     register_new_account-1.png
+    Input Text  css=input[name='login']    ${USERNAME_TEST}
+    Input Text  css=input[name='email']    ${EMAIL}
+    Input Text  css=input[name='password']      ${PWD_TEST}
+    Input Text  css=input[name='confirmPassword']   ${PWD_TEST}
+    Capture Page Screenshot     register_new_account-2.png
     Click Element   xpath=//button[@type='submit']
     Wait Until Element Is Visible   //strong[.='Registration saved!']
-    Capture Page Screenshot     register_new_account-{index}.png
+    Capture Page Screenshot     register_new_account-3.png
+    Close Browser
 
 *** Test Cases ***
-LoginWithNewAccount
-    [Documentation]  Login with new account
-    [Setup]  Test Config
+CheckMicroservice
+    [Documentation]   Sign in as Admin and check that microservice is online
+    [Setup]    Test Config
 
     Start Browser
-    Click Link      xpath=//*[@ng-click='vm.login()']
-    Capture Page Screenshot     login_with_new_account-{index}.png
-    Input Text  id=username     ${USERNAME_TEST}
-    Input Text  id=password     ${PWD_TEST}
-    Click Element   xpath=//button[@type='submit']
-    Wait Until Element Is Visible    //div[.='You are logged in as user "robotuser".']
-    Capture Page Screenshot     login_with_new_account-{index}.png
-    Click Element  id=logout
+    click element  account-menu
+    Click Element      login
+    Capture Page Screenshot     check_microservice-1.png
+
+    Input Text    id=username   ${USERNAME_A}
+    Input Text    id=password    ${PWD_A}
+    Click Element    xpath=//button[@type='submit']
+    Wait Until Element Is Visible    //div[.='You are logged in as user "admin".']
+    Capture Page Screenshot     check_microservice-2.png
+    click element  admin-menu
+    click element   gateway_menu
+    Capture Page Screenshot     check_microservice-3.png
+    Wait Until Element Is Visible   //td[.='/repository/**']
+    Close Browser
