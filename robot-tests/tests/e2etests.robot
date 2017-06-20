@@ -46,7 +46,7 @@ AdminSignIn
     [Setup]    Test Config
 
     Start Browser
-    Click Link	id=login
+    Click Element	id=login
     Capture Page Screenshot     admin_sign_in-{index}.png
 
     Input Text    id=username   ${USERNAME_A}
@@ -54,7 +54,7 @@ AdminSignIn
     Click Element    xpath=//button[@type='submit']
     Wait Until Element Is Visible    //div[.='You are logged in as user "admin".']
     Capture Page Screenshot     admin_sign_in-{index}.png
-    Click Link  id=logout
+    Click Element  id=logout
     Capture Page Screenshot     admin_sign_in-{index}.png
 
 *** Test Cases ***
@@ -63,7 +63,7 @@ RegisterNewAccount
     [Setup]    Test Config
 
     Start Browser
-    Click Link   Register a new account
+    Click Element   id=register_account
 
 	Wait Until Element Is Visible    //h1[.='Registration']
     Capture Page Screenshot     register_new_account-{index}.png
@@ -82,11 +82,11 @@ LoginWithNewAccount
     [Setup]  Test Config
 
     Start Browser
-    Click Link  id=login
+    Click Element  id=login
     Capture Page Screenshot     login_with_new_account-{index}.png
     Input Text  id=username     "robotuser"
     Input Text  id=password     "robotpassu"
     Click Element   xpath=//button[@type='submit']
     Wait Until Element Is Visible    //div[.='You are logged in as user "robotuser".']
     Capture Page Screenshot     login_with_new_account-{index}.png
-    Click Link  id=logout
+    Click Element  id=logout
