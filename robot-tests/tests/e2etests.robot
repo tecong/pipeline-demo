@@ -46,7 +46,7 @@ AdminSignIn
     [Setup]    Test Config
 
     Start Browser
-    Click Element	id=login
+    Click Link      xpath=//*[@ng-click='vm.login()']
     Capture Page Screenshot     admin_sign_in-{index}.png
 
     Input Text    id=username   ${USERNAME_A}
@@ -63,13 +63,13 @@ RegisterNewAccount
     [Setup]    Test Config
 
     Start Browser
-    Click Element   id=register_account
+    Click Link      xpath=//*[@id='redister_account']
 
 	Wait Until Element Is Visible    //h1[.='Registration']
     Capture Page Screenshot     register_new_account-{index}.png
-    Input Text  id=login    "robotuser"
-    Input Text  id=email    "robotuser@tecdomain.net"
-    Input Text  id=password "robotpassu"
+    Input Text  id=login    ${USERNAME_TEST}
+    Input Text  id=email    ${EMAIL}
+    Input Text  id=password ${PWD_TEST}
     Input Text  id=confirmPassword  "robotpassu"
     Capture Page Screenshot     register_new_account-{index}.png
     Click Element   xpath=//button[@type='submit']
@@ -82,10 +82,10 @@ LoginWithNewAccount
     [Setup]  Test Config
 
     Start Browser
-    Click Element  id=login
+    Click Link      xpath=//*[@ng-click='vm.login()']
     Capture Page Screenshot     login_with_new_account-{index}.png
-    Input Text  id=username     "robotuser"
-    Input Text  id=password     "robotpassu"
+    Input Text  id=username     ${USERNAME_TEST}
+    Input Text  id=password     ${PWD_TEST}
     Click Element   xpath=//button[@type='submit']
     Wait Until Element Is Visible    //div[.='You are logged in as user "robotuser".']
     Capture Page Screenshot     login_with_new_account-{index}.png
