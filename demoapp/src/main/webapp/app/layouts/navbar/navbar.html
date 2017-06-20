@@ -53,13 +53,13 @@
                     </a>
                     <ul class="dropdown-menu" uib-dropdown-menu>
                         <li ui-sref-active="active" ng-switch-when="true">
-                            <a ui-sref="settings" ng-click="vm.collapseNavbar()">
+                            <a ui-sref="settings" ng-click="vm.collapseNavbar()" id="settings">
                                 <span class="glyphicon glyphicon-wrench"></span>&nbsp;
                                 <span data-translate="global.menu.account.settings">Settings</span>
                             </a>
                         </li>
                         <li ui-sref-active="active" ng-switch-when="true">
-                            <a ui-sref="password" ng-click="vm.collapseNavbar()">
+                            <a ui-sref="password" ng-click="vm.collapseNavbar()" id="password_change">
                                 <span class="glyphicon glyphicon-lock"></span>&nbsp;
                                 <span data-translate="global.menu.account.password">Password</span>
                             </a>
@@ -77,7 +77,7 @@
                             </a>
                         </li>
                         <li ui-sref-active="active" ng-switch-when="false">
-                            <a ui-sref="register" ng-click="vm.collapseNavbar()">
+                            <a ui-sref="register" ng-click="vm.collapseNavbar()" id="register_account">
                                 <span class="glyphicon glyphicon-plus-sign"></span>&nbsp;
                                 <span data-translate="global.menu.account.register">Register</span>
                             </a>

@@ -30,43 +30,64 @@ BrowseLinks
 
     Log 	Browsing to url ${URL}
     Start Browser
-	Capture Page Screenshot
+    Capture Page Screenshot     browselinks-{index}.png
 
-	Click Link   Register
-  Capture Page Screenshot
+    Click Link   Register
+    Capture Page Screenshot     browselinks-{index}.png
 # have to reload here because otherwise random failures becasue of stale element
-	Reload Page
-	Click Link 	 sign in
-	Capture Page Screenshot
-	
+    Reload Page
+    Click Link 	 sign in
+    Capture Page Screenshot     browselinks-{index}.png
+
+
+*** Test Cases ***
+AdminSignIn
+    [Documentation]   Sign in as Admin
+    [Setup]    Test Config
+
+    Start Browser
+    Click Link	id=login
+    Capture Page Screenshot     admin_sign_in-{index}.png
 
     Input Text    id=username   ${USERNAME_A}
     Input Text    id=password    ${PWD_A}
     Click Element    xpath=//button[@type='submit']
-	 Wait Until Element Is Visible    //div[.='You are logged in as user "admin".']
-
+    Wait Until Element Is Visible    //div[.='You are logged in as user "admin".']
+    Capture Page Screenshot     admin_sign_in-{index}.png
+    Click Link  id=logout
+    Capture Page Screenshot     admin_sign_in-{index}.png
 
 *** Test Cases ***
-SignInPage
-    [Documentation]   Visit sign in page
+RegisterNewAccount
+    [Documentation]    Register new account
     [Setup]    Test Config
 
     Start Browser
-	Click Link	sign in
-	Capture Page Screenshot
+    Click Link   Register a new account
 
-#    Input Text    xpath=//input[@id='password']   ${USERNAME_A}
-#    Input Text    xpath=//input[@id='password']    ${PWD_A}
-#    Click Element    //*[@type='submit']
-#	 Wait Until Element Is Visible    //div[.='You are logged in as user "admin".']
+	Wait Until Element Is Visible    //h1[.='Registration']
+    Capture Page Screenshot     register_new_account-{index}.png
+    Input Text  id=login    "robotuser"
+    Input Text  id=email    "robotuser@tecdomain.net"
+    Input Text  id=password "robotpassu"
+    Input Text  id=confirmPassword  "robotpassu"
+    Capture Page Screenshot     register_new_account-{index}.png
+    Click Element   xpath=//button[@type='submit']
+    Wait Until Element Is Visible   //strong[.='Registration saved!']
+    Capture Page Screenshot     register_new_account-{index}.png
 
 *** Test Cases ***
-RegistrationPage
-    [Documentation]   Visit registration page 
-    [Setup]    Test Config
+LoginWithNewAccount
+    [Documentation]  Login with new account
+    [Setup]  Test Config
 
     Start Browser
-	Click Link   Register a new account
-
-#	 Wait Until Element Is Visible    //h1[.='Registration']
-	Capture Page Screenshot
+    Click Link  id=login
+    Capture Page Screenshot     login_with_new_account-{index}.png
+    Input Text  id=username     "robotuser"
+    Input Text  id=password     "robotpassu"
+    Click Element   xpath=//button[@type='submit']
+    Wait Until Element Is Visible    //div[.='You are logged in as user "robotuser".']
+    Capture Page Screenshot     login_with_new_account-{index}.png
+    Click Link  id=logout
+    
