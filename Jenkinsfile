@@ -118,7 +118,7 @@ stage('Install to test') {
 
 stage('End-to-end tests') {
   node ('test') {
-    sleep 30
+    sleep 60
     checkout scm
     parallel(firefox: {
       dir('robot-tests') {
