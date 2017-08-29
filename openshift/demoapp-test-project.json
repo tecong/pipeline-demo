@@ -346,7 +346,7 @@
                 }
             },
             "spec": {
-                "host": "demoapp-test.cloudapps.ocp-tdemo4.teco.prd.a.tecdomain.net",
+                "host": "demoapp-test.cloudapps.ocp-tdemo5.teco.prd.a.tecdomain.net",
                 "to": {
                     "kind": "Service",
                     "name": "demoapp",
@@ -356,7 +356,7 @@
             "status": {
                 "ingress": [
                     {
-                        "host": "demoapp-test.cloudapps.ocp-tdemo4.teco.prd.a.tecdomain.net",
+                        "host": "demoapp-test.cloudapps.ocp-tdemo5.teco.prd.a.tecdomain.net",
                         "routerName": "router",
                         "conditions": [
                             {
